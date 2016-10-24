@@ -10,8 +10,14 @@ class MetaSignal(type): #More than a MetaSignal
             for index, item in enumerate(args):
                 assert isinstance(item, arg_types[index])
             obj._args = args
+        def __getattr__(obj, key):
+            if key in obj.arg_names:
+                return obj.args[obj.arg_names.index(key)]
+            else:
+                raise AttributeError()
         dct = dict()
         dct["__init__"] = __init__
+        dct["__getattr__"] = __getattr__
         dct["args"] = property(lambda self: self._args)
         dct["action"] = property(lambda self: self.__class__.__name__.lower())
         dct["bytearray"] = property(lambda self:
